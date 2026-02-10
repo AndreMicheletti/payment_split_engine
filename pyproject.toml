@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "cakto-split-engine"
+version = "0.1.0"
+description = ""
+authors = ["AndreMicheletti"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "5.2"
+django-restframework = "^0.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "black (>=26.1.0,<27.0.0)"
+]
