@@ -6,7 +6,7 @@ from django.db import transaction
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 
-from app.models import PaymentModel, PaymentStatus, EventType, EventStatus
+from app.models import PaymentModel, PaymentStatus, EventType, EventStatus, LedgerEntryModel
 from app.api.serializers import PaymentSerializer, PaymentResponseSerializer
 from app.services.split_service import SplitService
 
@@ -62,13 +62,25 @@ class PaymentsViewSet(viewsets.GenericViewSet):
         
         with transaction.atomic():
             payment = PaymentModel.objects.create(
-            status=PaymentStatus.CAPTURED,
-            gross_amount=calculated_data["gross_amount"],
-            fee_amount=calculated_data["fee_amount"],
-            net_amount=calculated_data["net_amount"],
-            payment_method=data["payment_method"],
-            installments=data["installments"],
-            idempotency_key=idempotency_key,
+                status=PaymentStatus.CAPTURED,
+                gross_amount=calculated_data["gross_amount"],
+                fee_amount=calculated_data["fee_amount"],
+                net_amount=calculated_data["net_amount"],
+                payment_method=data["payment_method"],
+                installments=data["installments"],
+                idempotency_key=idempotency_key,
+            )
+            
+            LedgerEntryModel.objects.bulk_create(
+                [
+                    LedgerEntryModel(
+                        payment=payment,
+                        recipient_id=recp["recipient_id"],
+                        role="payee",
+                        amount=recp["amount"],
+                    )
+                    for recp in calculated_data["receivables"]
+                ]
             )
 
         response_data = {
