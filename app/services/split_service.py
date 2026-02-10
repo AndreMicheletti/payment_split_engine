@@ -25,6 +25,10 @@ class SplitService:
         fee_value = SplitService.round(gross_amount * fee_percent / 100, ROUND_HALF_UP)
 
         net_amount = gross_amount - fee_value
+        
+        splits_sum = sum(split["percent"] for split in splits)
+        if splits_sum != 100:
+            raise ValueError("Total percent of splits must equal 100.")
 
         accumulator = Decimal("0.00")
         receivables = []
