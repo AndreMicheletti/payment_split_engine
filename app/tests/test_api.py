@@ -2,6 +2,8 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 
+from uuid import uuid4
+
 class PaymentAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -21,6 +23,8 @@ class PaymentAPITestCase(TestCase):
                 { "recipient_id": "producer_1", "role": "affiliate", "percent": 50 }
             ]
         }
-        response = self.client.post(url, data, format='json')
+        headers = {
+            "Idempotency-Key": uuid4()
+        }
+        response = self.client.post(url, data, headers=headers, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-

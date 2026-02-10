@@ -74,3 +74,25 @@ class PaymentSerializer(serializers.Serializer):
                 "PIX payment method does not support installments greater than 1."
             )
         return validated_attrs
+
+class ReceivableSerializer(serializers.Serializer):
+    recipient_id = serializers.CharField(max_length=255)
+    role = serializers.CharField(max_length=50)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
+class OutboxEventSerializer(serializers.Serializer):
+    type = serializers.CharField(max_length=50)
+    status = serializers.CharField(max_length=50)
+
+
+class PaymentResponseSerializer(serializers.Serializer):
+    payment_id = serializers.CharField(max_length=255)
+    status = serializers.CharField(max_length=50)
+
+    gross_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    platform_fee_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    net_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    receivables = ReceivableSerializer(many=True)
+    outbox_event = OutboxEventSerializer()

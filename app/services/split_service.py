@@ -1,7 +1,22 @@
 from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP
 from typing import List, Dict
 
+from app.models import PaymentMethod
+
 class SplitService:
+    @staticmethod
+    def calculate_fee(payment_method: PaymentMethod, installments: int) -> Decimal:
+        if payment_method == PaymentMethod.PIX:
+            return Decimal("0.00")
+        if payment_method == PaymentMethod.CARD:
+            if installments == 1:
+                return Decimal("3.99")
+            else:
+                base = Decimal("4.99")
+                extra = Decimal("2.00") * (installments - 1)
+                return base + extra
+        raise ValueError("Unsupported payment method.")
+
     @staticmethod
     def calculate(
         gross_amount: Decimal, fee_percent: Decimal, splits: List[Dict]
