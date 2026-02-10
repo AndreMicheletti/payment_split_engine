@@ -58,9 +58,7 @@ class PaymentSerializer(serializers.Serializer):
 
         total_percent = sum(split["percent"] for split in value)
         if total_percent != 100:
-            raise serializers.ValidationError(
-                "Total percent of splits must equal 100."
-            )
+            raise serializers.ValidationError("Total percent of splits must equal 100.")
         return value
 
     def validate(self, attrs):
@@ -74,6 +72,7 @@ class PaymentSerializer(serializers.Serializer):
                 "PIX payment method does not support installments greater than 1."
             )
         return validated_attrs
+
 
 class ReceivableSerializer(serializers.Serializer):
     recipient_id = serializers.CharField(max_length=255)

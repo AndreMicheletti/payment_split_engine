@@ -17,8 +17,10 @@ class SplitCalculatorTestCase(TestCase):
         self.assertEqual(result["net_amount"], Decimal("100.00"))
         self.assertEqual(len(result["receivables"]), 2)
         print(result["receivables"])
-        self.assertEqual(sum(x["amount"] for x in result["receivables"]), result["net_amount"])
-        
+        self.assertEqual(
+            sum(x["amount"] for x in result["receivables"]), result["net_amount"]
+        )
+
     def test_split_calculator_cents_distribute(self):
         total_amount = Decimal("125.00")
         fee_percent = Decimal("20.00")
@@ -42,4 +44,3 @@ class SplitCalculatorTestCase(TestCase):
         [*normal_ones, lucky_one] = receivables
         assert all(x["amount"] == Decimal("33.33") for x in normal_ones)
         assert lucky_one["amount"] == Decimal("33.34")
-
