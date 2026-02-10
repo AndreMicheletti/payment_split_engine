@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from app.models import PaymentMethod
 
+
 class SplitService:
     @staticmethod
     def calculate_fee(payment_method: PaymentMethod, installments: int) -> Decimal:
@@ -36,7 +37,13 @@ class SplitService:
             recp_amount = SplitService.round(net_amount * percent / 100)
             accumulator += recp_amount
 
-            receivables.append({"recipient_id": recipient_id, "amount": recp_amount, "role": split.get("role", "")})
+            receivables.append(
+                {
+                    "recipient_id": recipient_id,
+                    "amount": recp_amount,
+                    "role": split.get("role", ""),
+                }
+            )
 
         leftover = net_amount - accumulator
         if leftover > Decimal("0.00"):
